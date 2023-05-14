@@ -1,21 +1,7 @@
 import numpy as np
 import heapq as hq
-import time
 
 
-def timeit(f):
-    def timed(*args, **kw):
-        print("running")
-        ts = time.time()
-        result = f(*args, **kw)
-        te = time.time()
-        print('func:%r took: %2.4f sec' % (f.__name__, te - ts))
-        return result
-
-    return timed
-
-
-@timeit
 def BellmanFord(src, adjacency):
     N = len(adjacency)
     dist = [float("Inf")] * N
@@ -36,7 +22,6 @@ def BellmanFord(src, adjacency):
     return dist, predecessor
 
 
-@timeit
 def Dijkstra(src, adjacency):
     N = len(adjacency)
     dist = [float('Inf')] * N

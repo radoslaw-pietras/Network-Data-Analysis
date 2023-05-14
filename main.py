@@ -1,4 +1,4 @@
-import random
+import time
 
 import numpy as np
 
@@ -18,23 +18,53 @@ def print_path(predecessors, target):
     print('->'.join([str(p) for p in reversed(path)]))
 
 
+def run_test(alg, adj, src, target):
+    ts = time.time()
+    dist, paths = alg(src, adj)
+    te = time.time()
+    duration = te - ts
+    print_path(paths, target)
+    print(f'length: {dist[target]}, time: {duration}')
+    print()
+    return duration
+
+
 def main():
     weights = np.arange(1, 11)
     src = 0
     repeats = 5
-    Ns = [10, 100, 500, 1000, 2000]
+    Ns = [50, 100, 150, 200, 500, 1000, 2000]
     algs = [Dijkstra, BellmanFord]
-    for _ in range(repeats):
-        for n in Ns:
+    for n in Ns:
+        dj_list_times = []
+        dj_matrix_times = []
+        bf_list_times = []
+        bf_matrix_times = []
+        for r in range(repeats):
             target = n - 1
-            adj_list, adj_matrix = get_graph(n, n, weights, adjacency='both')
-            adjs = [adj_list, adj_matrix]
-            for adj in adjs:
-                for alg in algs:
-                    dist, path = alg(src, adj)
-                    print_path(path, target)
-                    print(f'length: {dist[target]}')
-                    print()
+            adj_list, adj_matrix, m = get_graph(n, weights, adjacency='both')
+            print(f"[{r+1}]: running graph with {n} nodes and {m} directed edges")
+            print("Dijkstra - list:")
+            dj_list_times.append(run_test(Dijkstra, adj_list, src, target))
+
+            print("Dijkstra - matrix:")
+            dj_matrix_times.append(run_test(Dijkstra, adj_matrix, src, target))
+
+            print("BellmanFord - list:")
+            bf_list_times.append(run_test(BellmanFord, adj_list, src, target))
+
+            print("BellmanFord - matrix:")
+            bf_matrix_times.append(run_test(BellmanFord, adj_matrix, src, target))
+
+        with open(f"bellman-ford-list.txt", 'a') as f:
+            f.write(f"{n};{m};{np.average(bf_list_times)}\n")
+        with open(f"bellman-ford-matrix.txt", 'a') as f:
+            f.write(f"{n};{m};{np.average(bf_matrix_times)}\n")
+
+        with open(f"dijkstra-list.txt", 'a') as f:
+            f.write(f"{n};{m};{np.average(dj_list_times)}\n")
+        with open(f"dijkstra-matrix.txt", 'a') as f:
+            f.write(f"{n};{m};{np.average(dj_matrix_times)}\n")
 
 
 if __name__ == '__main__':

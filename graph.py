@@ -5,7 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def get_graph(n_nodes, n_edges, weights_range, adjacency=None):
+def get_graph(n_nodes, weights_range, adjacency=None):
+    n_edges = n_nodes
     n_retires = 0
     G = None
     while n_retires < 10:
@@ -15,16 +16,18 @@ def get_graph(n_nodes, n_edges, weights_range, adjacency=None):
         else:
             print("retrying...")
             n_retires += 1
+            n_edges *= 2
+            n_edges = min(n_edges, n_nodes*(n_nodes-1))
 
     if G is None:
         print(f"failed after {n_retires} retries")
         exit(-1)
     if adjacency == 'list':
-        return convert_to_list(G)
+        return convert_to_list(G), n_edges
     if adjacency == 'matrix':
-        return convert_to_matrix(G)
+        return convert_to_matrix(G), n_edges
     if adjacency == 'both':
-        return convert_to_list(G), convert_to_matrix(G)
+        return convert_to_list(G), convert_to_matrix(G), n_edges
 
 
 def convert_to_matrix(G):
@@ -57,7 +60,7 @@ def generate_random_graph(n, m, weights=None):
     connected = False
     while not connected:
         if len(G.edges) > m:
-            print(f"Failed to create random directed graph with {m} edges")
+            print(f"Failed to create random connected graph with only {m} edges")
             return
         success = add_random_edge(G, weights)
         if success:
