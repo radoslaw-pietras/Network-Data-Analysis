@@ -33,7 +33,7 @@ def main():
     weights = np.arange(1, 11)
     src = 0
     repeats = 5
-    Ns = [50, 100, 150, 200, 500, 1000, 2000]
+    Ns = [50, 100, 150, 200, 500, 1000,]
     algs = [Dijkstra, BellmanFord]
     for n in Ns:
         dj_list_times = []

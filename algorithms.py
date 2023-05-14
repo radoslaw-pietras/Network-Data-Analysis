@@ -9,16 +9,20 @@ def BellmanFord(src, adjacency):
     predecessor = [None] * N
     for _ in range(N - 1):
         for u in range(N):
-            for v, w in get_neighbours(adjacency, u):
-                if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
-                    predecessor[v] = u
+            for v in range(N):
+                w = get_weight(adjacency, u, v)
+                if w != 0:
+                    if dist[u] + w < dist[v]:
+                        dist[v] = dist[u] + w
+                        predecessor[v] = u
 
     for u in range(N):
-        for v, w in get_neighbours(adjacency, u):
-            if dist[u] != float("Inf") and dist[u] + w < dist[v]:
-                print("Graph contains negative weight cycle")
-                return
+        for v in range(N):
+            w = get_weight(adjacency, u, v)
+            if w != 0:
+                if dist[u] + w < dist[v]:
+                    print("Graph contains negative weight cycle")
+                    exit(-1)
     return dist, predecessor
 
 
@@ -59,6 +63,7 @@ def get_weight(adjacency, i, j):
         for n, w in adjacency[i]:
             if j == n:
                 return w
+        return 0
 
-    if type(adjacency) == np.array:
+    if type(adjacency) == np.ndarray:
         return adjacency[i, j]
