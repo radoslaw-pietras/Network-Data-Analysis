@@ -33,16 +33,21 @@ def main():
     weights = np.arange(1, 11)
     src = 0
     repeats = 5
-    Ns = [50, 100, 150, 200, 500, 1000,]
+    # Ns = [50, 100, 150, 200, 500, 1000,]
+    Ns = np.arange(50, 1050, 50)
+
     algs = [Dijkstra, BellmanFord]
+
     for n in Ns:
         dj_list_times = []
         dj_matrix_times = []
         bf_list_times = []
         bf_matrix_times = []
+        edges = []
         for r in range(repeats):
             target = n - 1
             adj_list, adj_matrix, m = get_graph(n, weights, adjacency='both')
+            edges.append(m)
             print(f"[{r+1}]: running graph with {n} nodes and {m} directed edges")
             print("Dijkstra - list:")
             dj_list_times.append(run_test(Dijkstra, adj_list, src, target))
@@ -57,14 +62,14 @@ def main():
             bf_matrix_times.append(run_test(BellmanFord, adj_matrix, src, target))
 
         with open(f"bellman-ford-list.txt", 'a') as f:
-            f.write(f"{n};{m};{np.average(bf_list_times)}\n")
+            f.write(f"{n};{round(np.average(edges))};{np.average(bf_list_times)}\n")
         with open(f"bellman-ford-matrix.txt", 'a') as f:
-            f.write(f"{n};{m};{np.average(bf_matrix_times)}\n")
+            f.write(f"{n};{round(np.average(edges))};{np.average(bf_matrix_times)}\n")
 
         with open(f"dijkstra-list.txt", 'a') as f:
-            f.write(f"{n};{m};{np.average(dj_list_times)}\n")
+            f.write(f"{n};{round(np.average(edges))};{np.average(dj_list_times)}\n")
         with open(f"dijkstra-matrix.txt", 'a') as f:
-            f.write(f"{n};{m};{np.average(dj_matrix_times)}\n")
+            f.write(f"{n};{round(np.average(edges))};{np.average(dj_matrix_times)}\n")
 
 
 if __name__ == '__main__':
