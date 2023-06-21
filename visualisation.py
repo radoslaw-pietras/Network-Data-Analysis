@@ -47,3 +47,18 @@ for algorithm in ["bellman-ford-list", "bellman-ford-matrix", "dijkstra-list", "
 
     plt.suptitle(algorithm)
     plt.show()
+
+fig_full = plt.figure()
+ax1 = fig_full.add_subplot(111)
+
+for algorithm in ["bellman-ford-list", "bellman-ford-matrix", "dijkstra-list", "dijkstra-matrix"]:
+    data = pd.read_csv(f"{algorithm}.txt", sep=';', header=None)
+    data.columns = ["Vertices", "Edges", "Time"]
+    y = data["Time"]
+    x = data["Edges"]
+
+    ax1.scatter(x, y, s=10, label=algorithm)
+plt.xlabel("Edges")
+plt.ylabel(f"{y.name} [s]")
+plt.legend(loc="upper left")
+plt.show()
